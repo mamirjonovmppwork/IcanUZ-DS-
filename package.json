@@ -1,0 +1,12 @@
+{
+  "name": "icanuz-kurs-landing",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Icanuz Digital Solutions — kurslar uchun landing page (HTML, CSS, JS + Vercel serverless)",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "vercel dev"
+  }
+}

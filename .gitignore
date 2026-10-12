@@ -1,0 +1,25 @@
+# Maxfiy kalitlar — HECH QACHON GitHub'ga yuklanmasin
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Vercel
+.vercel
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Tizim fayllari
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Muharrirlar
+.vscode/
+.idea/
+*.swp
