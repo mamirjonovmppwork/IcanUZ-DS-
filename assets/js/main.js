@@ -69,6 +69,13 @@
   $("#form-course-clear").addEventListener("click", function () { setCourse(""); });
 
   /* ---------- Form ---------- */
+  // Reklama manbasi (UTM / Facebook) — arizaga qo'shib yuboriladi
+  var SRC=(function(){var K=['utm_source','utm_medium','utm_campaign','utm_content','utm_term'],o={},has=false,q;
+    try{q=new URLSearchParams(location.search)}catch(_){q=null}
+    if(q){K.forEach(function(k){var v=q.get(k);if(v){o[k]=v.slice(0,100);has=true}});if(q.get('fbclid')){o.fbclid='1';has=true}}
+    if(!has&&document.referrer){try{var rh=new URL(document.referrer).host;if(rh&&rh!==location.host){o.ref=rh;has=true}}catch(_){}}
+    try{if(has)sessionStorage.setItem('icz_src',JSON.stringify(o));else o=JSON.parse(sessionStorage.getItem('icz_src')||'{}')||{}}catch(_){}
+    return o}());
   var form = $("#lead-form");
   var nameEl = $("#name");
   var phoneEl = $("#phone");
@@ -135,7 +142,8 @@
       phone: "998" + digits(phoneEl.value),
       course: courseInput.value,
       website: $("#website").value,
-      ts: $("#ts").value
+      ts: $("#ts").value,
+      src: SRC
     };
 
     var ctrl = "AbortController" in window ? new AbortController() : null;

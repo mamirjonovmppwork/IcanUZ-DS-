@@ -42,6 +42,25 @@ function escapeHtml(s) {
     .replace(/>/g, "&gt;");
 }
 
+// Reklama manbasi: UTM teglar yoki Facebook/Instagram'dan kelganini aniqlaydi
+const SRC_NAMES = { fb: "Facebook", facebook: "Facebook", ig: "Instagram", instagram: "Instagram", msg: "Messenger", an: "Audience Network" };
+function sourceLines(src, esc) {
+  const s = src && typeof src === "object" ? src : {};
+  const g = (k) => String(s[k] || "").trim().slice(0, 100);
+  const source = g("utm_source"), medium = g("utm_medium"), campaign = g("utm_campaign"), content = g("utm_content"), ref = g("ref");
+  let where;
+  if (source) where = SRC_NAMES[source.toLowerCase()] || source;
+  else if (s.fbclid) where = "Facebook/Instagram";
+  else if (/(^|\.)(facebook|instagram)\.com$/i.test(ref)) where = /instagram/i.test(ref) ? "Instagram" : "Facebook";
+  else if (ref) where = ref;
+  else where = "To‘g‘ridan-to‘g‘ri (organik)";
+  if (medium && /^(paid|cpc|ads?|reklama)$/i.test(medium)) where += " — reklama";
+  const out = [`📣 <b>Manba:</b> ${esc(where)}`];
+  if (campaign) out.push(`🎯 <b>Kampaniya:</b> ${esc(campaign)}`);
+  if (content) out.push(`🖼 <b>Reklama:</b> ${esc(content)}`);
+  return out;
+}
+
 function formatPhone(p) {
   // 998874007711 -> +998 87 400 77 11
   return `+998 ${p.slice(3, 5)} ${p.slice(5, 8)} ${p.slice(8, 10)} ${p.slice(10, 12)}`;
@@ -143,7 +162,8 @@ module.exports = async function handler(req, res) {
     `📞 <b>Telefon:</b> ${formatPhone(phone)}`,
     `📚 <b>Kurs:</b> ${escapeHtml(course || "Tanlanmagan")}`,
     `🕒 <b>Vaqt:</b> ${escapeHtml(time)} (Toshkent)`,
-    "🌐 <b>Manba:</b> sayt (kurs landing page)",
+    "🌐 <b>Sayt:</b> kurs landing page",
+    ...sourceLines(body.src, escapeHtml),
   ].join("\n");
 
   const ctrl = new AbortController();
